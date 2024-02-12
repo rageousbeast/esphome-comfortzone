@@ -122,7 +122,12 @@ namespace esphome::comfortzone
     void set_sensor_offset(int sensor_num, float temp_offset); // sensor: [0:7], offset in °C (-10.0° -> 10.0°)
     void override_indoor_temperature(float temp);
     void enable_fireplace_mode();
-    void disable_fireplace_mode();
+    void disable_fireplace_mode();    
+    void set_hot_water_temperature(float temp);
+    void set_led_luminosity(int lum);
+    void set_fan_speed(int speed);
+    void enable_extra_hot_water();
+    void disable_extra_hot_water();
 #endif
 
     void setup() override;
@@ -132,6 +137,7 @@ namespace esphome::comfortzone
     void disable_debugging();
     void forward_to_udp();
     void set_fireplace_mode(bool enable);
+    void set_extra_hot_water(bool enable);
 
     globals::RestoringGlobalsComponent<float> *te3_offset_{nullptr};
 

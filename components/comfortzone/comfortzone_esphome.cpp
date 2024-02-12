@@ -444,6 +444,16 @@ namespace esphome::comfortzone
                      {});
     register_service(&ComfortzoneComponent::disable_fireplace_mode, "disable_fireplace_mode",
                      {});
+    register_service(&ComfortzoneComponent::set_hot_water_temperature, "set_hot_water_temperature",
+                     {"temperature"});
+    register_service(&ComfortzoneComponent::set_led_luminosity, "set_led_luminosity",
+                     {"luminosity"});
+    register_service(&ComfortzoneComponent::set_fan_speed, "set_fan_speed",
+                     {"speed"});
+    register_service(&ComfortzoneComponent::enable_extra_hot_water, "enable_extra_hot_water",
+                     {});
+    register_service(&ComfortzoneComponent::disable_extra_hot_water, "disable_extra_hot_water",
+                     {});
 #endif
 
     heatpump_->begin();
@@ -635,6 +645,59 @@ namespace esphome::comfortzone
   {
     set_fireplace_mode(false);
   }
+
+  void ComfortzoneComponent::set_hot_water_temperature(float temp)
+  {
+    if (temp < 10.0 || temp > 60.0)
+    {
+      ESP_LOGE(TAG, "Invalid temperature %f", temp);
+      return;
+    }
+    if(heatpump_->set_hot_water_temperature(temp)) {
+      ESP_LOGI(TAG, "Set hot water temperature: %d SUCCESS", temp);
+    } else {
+      ESP_LOGE(TAG, "Set hot water temperature: %d FAILED", temp);
+    }
+  }
+
+  void ComfortzoneComponent::set_led_luminosity(int lum)
+  {
+    if (lum < 0 || lum > 6)
+    {
+      ESP_LOGE(TAG, "Invalid luminosity %f", lum);
+      return;
+    }
+    if(heatpump_->set_led_luminosity(lum)) {
+      ESP_LOGI(TAG, "Set led luminosity: %d SUCCESS", lum);
+    } else {
+      ESP_LOGE(TAG, "Set led luminosity: %d FAILED", lum);
+    }
+  }
+
+  void ComfortzoneComponent::set_fan_speed(int speed)
+  {
+    if (speed < 1 || speed > 3)
+    {
+      ESP_LOGE(TAG, "Invalid speed %f", speed);
+      return;
+    }
+    if(heatpump_->set_fan_speed(speed)) {
+      ESP_LOGI(TAG, "Set fan speed: %d SUCCESS", speed);
+    } else {
+      ESP_LOGE(TAG, "Set fan speed: %d FAILED", speed);
+    }
+  }
+
+  void ComfortzoneComponent::enable_extra_hot_water()
+  {
+    set_extra_hot_water(true);
+  }
+
+  void ComfortzoneComponent::disable_extra_hot_water()
+  {
+    set_extra_hot_water(false);
+  }
+
 #endif
 
   void ComfortzoneComponent::set_fireplace_mode(bool enable)
@@ -646,6 +709,15 @@ namespace esphome::comfortzone
     else
     {
       ESP_LOGE(TAG, "Fireplace mode: %d FAILED", static_cast<int>(enable));
+    }
+  }
+
+  void ComfortzoneComponent::set_extra_hot_water(bool enable)
+  {
+    if(heatpump_->set_extra_hot_water(enable)) {
+      ESP_LOGE(TAG, "Set extra hot water: %d SUCCESS", static_cast<int>(enable));
+    } else {
+      ESP_LOGE(TAG, "Set extra hot water: %d FAILED", static_cast<int>(enable));
     }
   }
 }
