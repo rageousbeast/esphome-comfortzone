@@ -307,29 +307,40 @@ namespace esphome::comfortzone
   {
     heatpump->process();
 
-    if (power_changed)
+    if (power_changed && heatpump_current_compressor_input_power && heatpump_current_add_power)
     {
       const float total_applied_power = heatpump_current_compressor_input_power->get_state() + heatpump_current_add_power->get_state();
       const float cop = heatpump_current_total_power->get_state() / total_applied_power;
 
-      additional_power_enabled->publish_state(heatpump_current_add_power->get_state() > 0);
+      if (additional_power_enabled)
+      {
+        additional_power_enabled->publish_state(heatpump_current_add_power->get_state() > 0);
+      }
 
-      if (mode->get_state() == "heating")
+      if (mode_ && heatpump_current_compressor_heating_input_power && heatpump_current_compressor_water_input_power &&
+          heating_cop && water_cop)
       {
-        heatpump_current_compressor_heating_input_power->publish_state(total_applied_power);
-        heatpump_current_compressor_water_input_power->publish_state(0);
-        heating_cop->publish_state(cop);
-      }
-      else if (mode->get_state() == "hot_water" || mode->get_state() == "heating_and_hot_water")
-      {
-        heatpump_current_compressor_water_input_power->publish_state(total_applied_power);
-        heatpump_current_compressor_heating_input_power->publish_state(0);
-        water_cop->publish_state(cop);
-      }
-      else if (mode->get_state() == "idle")
-      {
-        heatpump_current_compressor_water_input_power->publish_state(0);
-        heatpump_current_compressor_heating_input_power->publish_state(0);
+        if (mode->get_state() == "heating")
+        {
+          heatpump_current_compressor_heating_input_power->publish_state(total_applied_power);
+          heatpump_current_compressor_water_input_power->publish_state(0);
+          heating_cop->publish_state(cop);
+          water_cop->publish_state(NAN);
+        }
+        else if (mode->get_state() == "hot_water" || mode->get_state() == "heating_and_hot_water")
+        {
+          heatpump_current_compressor_water_input_power->publish_state(total_applied_power);
+          heatpump_current_compressor_heating_input_power->publish_state(0);
+          water_cop->publish_state(cop);
+          heating_cop->publish_state(NAN);
+        }
+        else if (mode->get_state() == "idle")
+        {
+          heatpump_current_compressor_water_input_power->publish_state(0);
+          heatpump_current_compressor_heating_input_power->publish_state(0);
+          water_cop->publish_state(NAN);
+          heating_cop->publish_state(NAN);
+        }
       }
       power_changed = false;
     }
