@@ -1,9 +1,12 @@
 substitutions:
-  de_pin: "37"
+  de_pin: "5"
 
 esphome:
   name: comfortzone
   platformio_options:
+    board_build.f_flash: 40000000L
+    board_build.flash_mode: dio
+    board_build.flash_size: 4MB
     build_flags:
       - "-O3"
       - "-DHP_PROTOCOL=180"
@@ -14,16 +17,26 @@ esphome:
     - esphome_rs485.h
     - comfortzone_esphome.h
     - comfortzone_esphome.cpp
+  on_boot: 
+    - priority: 90
+      then: 
+      - output.turn_off: re_de
 
 esp32:
-  board: lolin_s2_mini
+  variant: ESP32C3
+  board: esp32-c3-devkitm-1
   framework:
     type: esp-idf
+    
+output:
+  - platform: gpio
+    pin: ${de_pin}
+    id: re_de
 
 uart:
   id: uart_bus
-  tx_pin: 35
-  rx_pin: 36
+  tx_pin: 6
+  rx_pin: 7
   baud_rate: 19200
   data_bits: 8
   parity: NONE
@@ -217,7 +230,45 @@ api:
         - lambda: |-
             auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
             cz->set_fireplace_mode(false);
-
+    - service: set_room_temperature
+      variables:
+        current_temperature: float
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_room_temperature(current_temperature);
+    - service: set_hot_water_temperature
+      variables:
+        current_temperature: float
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_hot_water_temperature(current_temperature);
+    - service: set_led_luminosity
+      variables:
+        luminosity: int
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_led_luminosity(luminosity);
+    - service: set_fan_speed
+      variables:
+        speed: int
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_fan_speed(speed);
+    - service: enable_extra_hot_water
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_extra_hot_water(true);
+    - service: disable_extra_hot_water
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_extra_hot_water(false);
+    
 ota:
   password: !secret ota_password
 

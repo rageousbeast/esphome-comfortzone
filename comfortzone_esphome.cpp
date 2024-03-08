@@ -540,4 +540,80 @@ namespace esphome::comfortzone
       return false;
     }
   }
+
+  bool ComfortzoneComponent::set_room_temperature(float temp)
+  {
+    if (temp < 10.0 || temp > 50.0)
+    {
+      ESP_LOGE(TAG, "Invalid temperature %f", temp);
+      return false;
+    }
+    if(heatpump->set_room_temperature(temp)) {
+      ESP_LOGE(TAG, "Set room temperature: %d SUCCESS", temp);
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set room temperature: %d FAILED", temp);
+      return false;
+    }
+  }
+
+  bool ComfortzoneComponent::set_hot_water_temperature(float temp)
+  {
+    if (temp < 10.0 || temp > 60.0)
+    {
+      ESP_LOGE(TAG, "Invalid temperature %f", temp);
+      return false;
+    }
+    if(heatpump->set_hot_water_temperature(temp)) {
+      ESP_LOGE(TAG, "Set hot water temperature: %d SUCCESS", temp);
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set hot water temperature: %d FAILED", temp);
+      return false;
+    }
+  }
+
+  bool ComfortzoneComponent::set_led_luminosity(int lum)
+  {
+    if (lum < 0 || lum > 6)
+    {
+      ESP_LOGE(TAG, "Invalid luminosity %f", lum);
+      return false;
+    }
+    if(heatpump->set_led_luminosity(lum)) {
+      ESP_LOGE(TAG, "Set led luminosity: %d SUCCESS", lum);
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set led luminosity: %d FAILED", lum);
+      return false;
+    }
+  }
+
+  bool ComfortzoneComponent::set_fan_speed(int speed)
+  {
+    if (speed < 1 || speed > 3)
+    {
+      ESP_LOGE(TAG, "Invalid speed %f", speed);
+      return false;
+    }
+    if(heatpump->set_fan_speed(speed)) {
+      ESP_LOGE(TAG, "Set fan speed: %d SUCCESS", speed);
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set fan speed: %d FAILED", speed);
+      return false;
+    }
+  }
+
+  bool ComfortzoneComponent::set_extra_hot_water(bool enable)
+  {
+    if(heatpump->set_extra_hot_water(enable)) {
+      ESP_LOGE(TAG, "Set extra hot water: %d SUCCESS", static_cast<int>(enable));
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set extra hot water: %d FAILED", static_cast<int>(enable));
+      return false;
+    }
+  }
+
 }

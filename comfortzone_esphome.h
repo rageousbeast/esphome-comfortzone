@@ -55,6 +55,16 @@ namespace esphome::comfortzone
 
     bool set_fireplace_mode(bool enable);
 
+    bool set_room_temperature(float temp);
+
+    bool set_hot_water_temperature(float temp);
+
+    bool set_led_luminosity(int lum);
+
+    bool set_fan_speed(int lum);
+
+    bool set_extra_hot_water(bool enable);
+
     void setup() override;
     void loop() override;
 
