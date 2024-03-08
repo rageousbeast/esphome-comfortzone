@@ -317,7 +317,7 @@ namespace esphome::comfortzone
         additional_power_enabled->publish_state(heatpump_current_add_power->get_state() > 0);
       }
 
-      if (mode_ && heatpump_current_compressor_heating_input_power && heatpump_current_compressor_water_input_power &&
+      if (mode && heatpump_current_compressor_heating_input_power && heatpump_current_compressor_water_input_power &&
           heating_cop && water_cop)
       {
         if (mode->get_state() == "heating")
