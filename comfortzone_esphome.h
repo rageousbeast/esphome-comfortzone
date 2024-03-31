@@ -59,9 +59,11 @@ namespace esphome::comfortzone
 
     bool set_hot_water_temperature(float temp);
 
+    bool set_hot_water_priority(int priority);
+
     bool set_led_luminosity(int lum);
 
-    bool set_fan_speed(int lum);
+    bool set_fan_speed(int speed);
 
     bool set_extra_hot_water(bool enable);
 

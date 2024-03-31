@@ -584,6 +584,22 @@ namespace esphome::comfortzone
     }
   }
 
+  bool ComfortzoneComponent::set_hot_water_priority(int priority)
+  {
+    if (priority < 1 || priority > 3)
+    {
+      ESP_LOGE(TAG, "Invalid priority %f", priority);
+      return false;
+    }
+    if(heatpump->set_hot_water_priority(priority)) {
+      ESP_LOGE(TAG, "Set hot water priority: %d SUCCESS", priority);
+      return true;
+    } else {
+      ESP_LOGE(TAG, "Set hot water priority: %d FAILED", priority);
+      return false;
+    }
+  }
+
   bool ComfortzoneComponent::set_led_luminosity(int lum)
   {
     if (lum < 0 || lum > 6)

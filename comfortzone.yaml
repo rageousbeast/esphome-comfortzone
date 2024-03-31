@@ -12,7 +12,7 @@ esphome:
       - "-DHP_PROTOCOL=180"
   libraries:
     - https://github.com/vinnyspb/FastCRC.git
-    - https://github.com/qix67/comfortzone_heatpump.git
+    - https://github.com/rageousbeast/comfortzone_heatpump.git
   includes:
     - esphome_rs485.h
     - comfortzone_esphome.h
@@ -244,6 +244,13 @@ api:
         - lambda: |-
             auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
             cz->set_hot_water_temperature(current_temperature);
+    - service: set_hot_water_priority
+      variables:
+        priority: int
+      then:
+        - lambda: |-
+            auto cz = esphome::comfortzone::ComfortzoneComponent::get_singleton(id(uart_bus), $de_pin);
+            cz->set_hot_water_priority(priority);
     - service: set_led_luminosity
       variables:
         luminosity: int
