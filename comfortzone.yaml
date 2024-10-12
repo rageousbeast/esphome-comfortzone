@@ -56,76 +56,104 @@ sensor:
 
   sensors:
     - name: "Days until filter change"
+      state_class: measurement
       unit_of_measurement: days
     - name: "Outdoor temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Flow water temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Return water temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Indoor temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Hot gas temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Exchanger out temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Evaporator in temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Exhaust air temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Hot water temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Expansion valve calculated setting"
+      state_class: measurement
       unit_of_measurement: K
       accuracy_decimals: 1
     - name: "Expansion valve temperature difference"
+      state_class: measurement
       unit_of_measurement: K
       accuracy_decimals: 1
     - name: "Current compressor frequency"
+      state_class: measurement
       unit_of_measurement: Hz
     - name: "Current compressor power"
+      state_class: measurement
       unit_of_measurement: W
     - name: "Current compressor additional power"
+      state_class: measurement
       unit_of_measurement: W
     - name: "Current compressor total power"
+      state_class: measurement
       unit_of_measurement: W
     - name: "Current compressor input power"
+      state_class: measurement
       id: current_compressor_input_power
       unit_of_measurement: W
     - name: "Current compressor heating input power"
+      state_class: measurement
       id: current_compressor_heating_input_power
       unit_of_measurement: W
     - name: "Current compressor water input power"
+      state_class: measurement
       id: current_compressor_water_input_power
       unit_of_measurement: W
     - name: "Compressor energy"
+      state_class: total_increasing
       unit_of_measurement: kWh
     - name: "Additional energy"
+      state_class: total_increasing
       unit_of_measurement: kWh
     - name: "Hot water energy"
+      state_class: total_increasing
       unit_of_measurement: kWh
     - name: "Compressor runtime"
+      state_class: total_increasing
       unit_of_measurement: min
     - name: "Total runtime"
+      state_class: total_increasing
       unit_of_measurement: min
     - name: "Room heating setting"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Hot water setting"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Fan speed duty"
+      state_class: measurement
       unit_of_measurement: "%"
     - name: "Hot water calculated setting"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Heating CoP"
@@ -135,18 +163,23 @@ sensor:
       state_class: measurement
       accuracy_decimals: 2
     - name: "Indoor temperature sensor offset"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
     - name: "Target flow water temperature"
+      state_class: measurement
       unit_of_measurement: °C
       accuracy_decimals: 1
 - platform: total_daily_energy
+  state_class: total_increasing
   name: "Total Daily Input Energy"
   power_id: current_compressor_input_power
 - platform: total_daily_energy
+  state_class: total_increasing
   name: "Total Daily Heating Input Energy"
   power_id: current_compressor_heating_input_power
 - platform: total_daily_energy
+  state_class: total_increasing
   name: "Total Daily Water Input Energy"
   power_id: current_compressor_water_input_power
 
@@ -185,6 +218,9 @@ climate:
     climates:
       - name: "ComfortZone EX50 heating"
       - name: "ComfortZone EX50 hot water"
+        visual:
+          min_temperature: 30
+          max_temperature: 65
 
 time:
   - platform: sntp
