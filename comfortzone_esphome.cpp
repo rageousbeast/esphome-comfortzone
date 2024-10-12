@@ -513,10 +513,10 @@ namespace esphome::comfortzone
 
   void ComfortzoneComponent::override_indoor_temperature(float temp)
   {
-    if (!sensors_te3_indoor_temp->has_state() || (std::chrono::system_clock::now() - last_indoor_temperature_override) < std::chrono::minutes(5))
-    {
-      return;
-    }
+    // if (!sensors_te3_indoor_temp->has_state() || (std::chrono::system_clock::now() - last_indoor_temperature_override) < std::chrono::minutes(5))
+    // {
+    //   return;
+    // }
 
     const float offset = id(te3_offset) + temp - sensors_te3_indoor_temp->state;
 
