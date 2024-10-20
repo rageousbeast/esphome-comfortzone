@@ -370,6 +370,8 @@ namespace esphome::comfortzone
         {
           ESP_LOGE(TAG, "Set successful");
           last_indoor_temperature_override_high =  std::chrono::system_clock::time_point{};
+          id(te3_offset) = 0;
+          sensors_te3_indoor_temp_offset->publish_state(0);
         }
         else
         {
