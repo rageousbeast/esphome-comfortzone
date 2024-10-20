@@ -155,5 +155,6 @@ namespace esphome::comfortzone
     bool power_changed = false;
 
     std::chrono::system_clock::time_point last_indoor_temperature_override = {};
+    std::chrono::system_clock::time_point last_indoor_temperature_override_high = {};
   };
 }

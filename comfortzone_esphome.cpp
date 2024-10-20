@@ -11,6 +11,8 @@ extern esphome::globals::RestoringGlobalsComponent<float> *te3_offset;
 namespace esphome::comfortzone
 {
   static const char *TAG = "ComfortzoneComponent";
+  static const int waitUntilResetHours = 3;
+  static const float highOverrideTemp = 25;
   ComfortzoneComponent *ComfortzoneComponent::singleton = nullptr;
 
   static void on_temperature_sensor_update(int16_t value, void *context)
@@ -356,6 +358,26 @@ namespace esphome::comfortzone
         forward_to_udp();
       }
     }
+
+    //Automatic reset of overriden temperature if no override has been done in the specified period of time
+    //See override_indoor_temperature for more details.
+    if (last_indoor_temperature_override_high > std::chrono::system_clock::time_point{})
+    {      
+      if (std::chrono::system_clock::now() > last_indoor_temperature_override_high + std::chrono::hours(waitUntilResetHours))
+      {
+        ESP_LOGE(TAG, "Reset indoor temperature offset because no offset override has arrived in %.1f hours", waitUntilResetHours);
+        if (heatpump->set_sensor_offset(3, 0))
+        {
+          ESP_LOGE(TAG, "Set successful");
+          last_indoor_temperature_override_high =  std::chrono::system_clock::time_point{};
+        }
+        else
+        {
+          ESP_LOGE(TAG, "Failed");
+        }
+      }
+    }
+
   }
 
   void ComfortzoneComponent::disable_debugging()
@@ -517,6 +539,18 @@ namespace esphome::comfortzone
     // {
     //   return;
     // }
+
+    //Identify if requested override temperature is "highOverride", i.e. Override to a definitely high value to temporarily disable heating (usually 25c, stored in highOverrideTemp const)
+    if (temp==highOverrideTemp) {
+      //Save timestamp for automatic reset of override after X hours (usually 3, stored in waitUntilResetHours const)
+      //This is a backup solution when Home Assistant is offline and did not re-set the override within specified time interval. 
+      //Then ESP should automatically reset offset to 0 to avoid too cold room temperatures. Comfortzone will then basically use it's ventilation sensor.
+      last_indoor_temperature_override_high = std::chrono::system_clock::now();
+    }
+    else {      
+      last_indoor_temperature_override_high =  std::chrono::system_clock::time_point{};
+    }
+
 
     const float offset = id(te3_offset) + temp - sensors_te3_indoor_temp->state;
 
